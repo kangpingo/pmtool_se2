@@ -67,7 +67,27 @@
       "Bash(PORT=3000 npm run dev)",
       "Bash(pkill -f \"next-server\")",
       "Bash(PORT=3000 npm start)",
-      "Bash(npm start:*)"
+      "Bash(npm start:*)",
+      "Bash(git init:*)",
+      "Bash(git remote:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(gh api:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(kill -9 84360)",
+      "Bash(git:*)",
+      "Bash(gh release:*)",
+      "Bash(brew list:*)",
+      "Bash(npm outdated:*)",
+      "Bash(npm view:*)",
+      "Bash(npx next:*)",
+      "Bash(pg_isready -h localhost -p 5432)",
+      "Bash(kill %1)",
+      "Bash(kill 68495 39927 39928)",
+      "Bash(kill -9 42014)",
+      "Bash(kill -9 20078)"
     ]
   }
 }

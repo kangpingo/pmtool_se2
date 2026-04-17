@@ -1,13 +1,12 @@
-import Link from 'next/link'
-import { format } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
 import { cookies } from 'next/headers'
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import CreateProjectDialog from '@/components/CreateProjectDialog'
 import DueAlert from '@/components/DueAlert'
+import { format } from 'date-fns'
 import { FolderOpen, ListTodo, AlertTriangle, Clock, ArrowRight, User } from 'lucide-react'
 import { isTaskOverdue, isTaskDueToday, isTaskDueTomorrow } from '@/lib/date-utils'
 
@@ -67,17 +66,10 @@ export default async function HomePage() {
   const inProgressCnt = allTasks.filter(t => t.status === 'IN_PROGRESS').length
 
   return (
-    <div className="p-4 md:p-6 max-w-6xl xl:max-w-7xl 2xl:max-w-8xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t.title}</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {format(new Date(), t.dateFormat, lang === 'zh' ? { locale: zhCN } : {})}
-          </p>
-        </div>
-        <CreateProjectDialog />
-      </div>
-
+    <div className="px-4 pt-4 md:px-6 md:pt-6 max-w-6xl xl:max-w-7xl 2xl:max-w-8xl mx-auto space-y-6">
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        {lang === 'zh' ? '总览' : 'Overview'}
+      </h1>
       {/* 统计卡片 */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {[
@@ -150,7 +142,7 @@ export default async function HomePage() {
               }
 
               return (
-                <Link key={project.id} href={`/projects/${project.id}`}>
+                <Link key={project.id} href={`/projects/${project.id}/tasks`}>
                   <Card className={`h-full transition-all duration-200 hover:-translate-y-0.5 cursor-pointer overflow-hidden group bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`} style={{ boxShadow: `0 4px 24px ${progressColor}20` }}>
                     {/* 顶部色条 */}
                     <div className="h-1.5" style={{ background: getBarGradient() }} />

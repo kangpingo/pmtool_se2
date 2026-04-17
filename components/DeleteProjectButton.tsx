@@ -30,11 +30,22 @@ const labels = {
   },
 }
 
-export default function DeleteProjectButton({ id, name }: { id: string; name: string }) {
+type ProjectStatus = 'overdue' | 'completed' | 'ready' | 'in_progress'
+
+const statusStyles = {
+  overdue: 'bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/70',
+  completed: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600',
+  ready: 'bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/70',
+  in_progress: 'bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/70',
+}
+
+export default function DeleteProjectButton({ id, name, status = 'in_progress' }: { id: string; name: string; status?: ProjectStatus }) {
   const [open, setOpen] = useState(false)
   const router = useRouter()
   const { lang } = useApp()
   const t = labels[lang]
+
+  const buttonClassName = statusStyles[status]
 
   async function handleDelete() {
     try {
@@ -51,7 +62,7 @@ export default function DeleteProjectButton({ id, name }: { id: string; name: st
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="icon" className="h-9 w-9 bg-gray-200 dark:bg-gray-700 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-lg" title={t.deleteTooltip}>
+        <Button size="icon" className={`h-9 w-9 ${buttonClassName} rounded-lg`} title={t.deleteTooltip}>
           <Trash2 className="h-4 w-4" />
         </Button>
       </DialogTrigger>

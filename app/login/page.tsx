@@ -30,7 +30,7 @@ export default async function LoginPage() {
 
         <div className="space-y-6">
           <h2 className="text-5xl font-bold text-white leading-tight">
-            PMTool SE1
+            PMTool SE2
           </h2>
           <p className="text-indigo-300 text-xl">
             {lang === 'zh' ? '项目管理工具' : 'Project Management Tool'}
@@ -47,7 +47,7 @@ export default async function LoginPage() {
           </div>
         </div>
 
-        <p className="text-slate-500 text-sm">@2026 pmtool_se1</p>
+        <p className="text-slate-500 text-sm">@2026 pmtool_se2</p>
       </div>
 
       {/* Right side - Login Form */}
@@ -57,7 +57,7 @@ export default async function LoginPage() {
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
             <img src="/logo.svg" alt="Logo" className="w-10 h-10 rounded-xl" />
             <div className="text-center">
-              <h1 className="text-xl font-bold text-slate-800 dark:text-white">PMTool SE1</h1>
+              <h1 className="text-xl font-bold text-slate-800 dark:text-white">PMTool SE2</h1>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 {lang === 'zh' ? '项目管理工具' : 'Project Management Tool'}
               </p>

@@ -47,6 +47,8 @@ const labels = {
     nameRequired: '请填写项目简称',
     startDateRequired: '请选择开始日期',
     durationRequired: '请填写工期',
+    ownerRequired: '请填写责任人',
+    completionRequired: '请选择完成日期',
   },
   en: {
     title: 'New Project',
@@ -73,6 +75,8 @@ const labels = {
     nameRequired: 'Short name is required',
     startDateRequired: 'Start date is required',
     durationRequired: 'Duration is required',
+    ownerRequired: 'Owner is required',
+    completionRequired: 'Completion date is required',
   },
 }
 
@@ -80,6 +84,8 @@ interface FieldErrors {
   name?: string
   startDate?: string
   duration?: string
+  owner?: string
+  completionTime?: string
 }
 
 export default function CreateProjectDialog() {
@@ -96,7 +102,7 @@ export default function CreateProjectDialog() {
     description: '',
     owner: '',
     link: 'http://127.0.0.1:3000',
-    completionTime: '',
+    completionTime: format(addDays(new Date(), 29), 'yyyy-MM-dd'),
     image: 'https://www.oracle.com/assets/images/oracle-logo.png',
   })
 
@@ -126,7 +132,7 @@ export default function CreateProjectDialog() {
       description: '',
       owner: '',
       link: 'http://127.0.0.1:3000',
-      completionTime: '',
+      completionTime: format(addDays(new Date(), 29), 'yyyy-MM-dd'),
       image: 'https://www.oracle.com/assets/images/oracle-logo.png',
     })
     setErrors({})
@@ -137,6 +143,8 @@ export default function CreateProjectDialog() {
     if (!form.name.trim()) newErrors.name = t.nameRequired
     if (!form.startDate) newErrors.startDate = t.startDateRequired
     if (!form.duration || Number(form.duration) <= 0) newErrors.duration = t.durationRequired
+    if (!form.owner.trim()) newErrors.owner = t.ownerRequired
+    if (!form.completionTime) newErrors.completionTime = t.completionRequired
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -191,7 +199,7 @@ export default function CreateProjectDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-200 dark:shadow-blue-900/50"><Plus className="h-4 w-4 mr-2" />{lang === 'zh' ? '新建项目' : 'New Project'}</Button>
+        <Button size="sm" className="bg-indigo-500 hover:bg-indigo-600 text-white shadow-sm h-8"><Plus className="h-4 w-4 mr-2" />{lang === 'zh' ? '新建项目' : 'New Project'}</Button>
       </DialogTrigger>
       <DialogContent className="max-w-lg dark:bg-gray-800">
         <DialogHeader>
@@ -264,25 +272,27 @@ export default function CreateProjectDialog() {
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="text-sm font-medium text-gray-700 dark:text-gray-200 flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5 text-green-500" />
+                <span className="w-1.5 h-1.5 bg-red-500 rounded-full" />
                 {t.completionLabel}
               </Label>
               <Input type="date" value={form.completionTime}
-                onChange={e => handleCompletionDateChange(e.target.value)}
+                onChange={e => { handleCompletionDateChange(e.target.value); if (errors.completionTime) setErrors(er => ({ ...er, completionTime: undefined })) }}
                 placeholder={t.completionPlaceholder}
-                className="border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:border-blue-400 focus:ring-blue-100 dark:text-gray-100 transition-all"
+                className={`border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:border-blue-400 focus:ring-blue-100 dark:text-gray-100 transition-all ${errors.completionTime ? 'border-red-400 bg-red-50 dark:bg-red-900/20' : ''}`}
               />
+              {errors.completionTime && <p className="text-xs text-red-500 flex items-center gap-1"><AlertCircle className="h-3 w-3" />{errors.completionTime}</p>}
             </div>
             <div className="space-y-1.5">
               <Label className="text-sm font-medium text-gray-700 dark:text-gray-200 flex items-center gap-1.5">
-                <User className="h-3.5 w-3.5 text-purple-500" />
+                <span className="w-1.5 h-1.5 bg-red-500 rounded-full" />
                 {t.ownerLabel}
               </Label>
               <Input value={form.owner}
-                onChange={e => setForm(f => ({ ...f, owner: e.target.value }))}
-                className="border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:border-blue-400 focus:ring-blue-100 dark:text-gray-100 transition-all"
+                onChange={e => { setForm(f => ({ ...f, owner: e.target.value })); if (errors.owner) setErrors(er => ({ ...er, owner: undefined })) }}
+                className={`border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:border-blue-400 focus:ring-blue-100 dark:text-gray-100 transition-all ${errors.owner ? 'border-red-400 bg-red-50 dark:bg-red-900/20' : ''}`}
                 placeholder={t.ownerPlaceholder}
               />
+              {errors.owner && <p className="text-xs text-red-500 flex items-center gap-1"><AlertCircle className="h-3 w-3" />{errors.owner}</p>}
             </div>
           </div>
           <div className="space-y-1.5">

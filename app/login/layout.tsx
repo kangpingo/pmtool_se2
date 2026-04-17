@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
-  title: 'Login - PMTool SE1',
+  title: 'Login - PMTool SE2',
 }
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {

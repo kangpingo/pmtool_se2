@@ -33,16 +33,16 @@ interface ColumnConfig {
 
 const allColumns = {
   zh: [
-    { key: 'TODO',        label: '待开始', headerColor: 'bg-gray-100', headerColorDark: 'dark:bg-gray-700', colColor: 'bg-gray-50', colColorDark: 'dark:bg-gray-800/50', shadowColor: '#6b7280' },
+    { key: 'TODO',        label: '待开始', headerColor: 'bg-gray-200', headerColorDark: 'dark:bg-gray-700', colColor: 'bg-gray-100', colColorDark: 'dark:bg-gray-800/50', shadowColor: '#6b7280' },
     { key: 'IN_PROGRESS', label: '进行中', headerColor: 'bg-blue-100', headerColorDark: 'dark:bg-blue-900/50', colColor: 'bg-blue-50/50', colColorDark: 'dark:bg-blue-900/20', shadowColor: '#3b82f6' },
     { key: 'OVERDUE',     label: '已逾期', headerColor: 'bg-red-100', headerColorDark: 'dark:bg-red-900/50', colColor: 'bg-red-50/50', colColorDark: 'dark:bg-red-900/20', shadowColor: '#ef4444' },
-    { key: 'DONE',        label: '已完成', headerColor: 'bg-green-100', headerColorDark: 'dark:bg-green-900/50', colColor: 'bg-green-50/50', colColorDark: 'dark:bg-green-900/20', shadowColor: '#22c55e' },
+    { key: 'DONE',        label: '已完成', headerColor: 'bg-gray-200', headerColorDark: 'dark:bg-gray-600', colColor: 'bg-gray-200', colColorDark: 'dark:bg-gray-700', shadowColor: '#374151' },
   ],
   en: [
-    { key: 'TODO',        label: 'To Do', headerColor: 'bg-gray-100', headerColorDark: 'dark:bg-gray-700', colColor: 'bg-gray-50', colColorDark: 'dark:bg-gray-800/50', shadowColor: '#6b7280' },
+    { key: 'TODO',        label: 'To Do', headerColor: 'bg-gray-200', headerColorDark: 'dark:bg-gray-700', colColor: 'bg-gray-100', colColorDark: 'dark:bg-gray-800/50', shadowColor: '#6b7280' },
     { key: 'IN_PROGRESS', label: 'In Progress', headerColor: 'bg-blue-100', headerColorDark: 'dark:bg-blue-900/50', colColor: 'bg-blue-50/50', colColorDark: 'dark:bg-blue-900/20', shadowColor: '#3b82f6' },
     { key: 'OVERDUE',     label: 'Overdue', headerColor: 'bg-red-100', headerColorDark: 'dark:bg-red-900/50', colColor: 'bg-red-50/50', colColorDark: 'dark:bg-red-900/20', shadowColor: '#ef4444' },
-    { key: 'DONE',        label: 'Done', headerColor: 'bg-green-100', headerColorDark: 'dark:bg-green-900/50', colColor: 'bg-green-50/50', colColorDark: 'dark:bg-green-900/20', shadowColor: '#22c55e' },
+    { key: 'DONE',        label: 'Done', headerColor: 'bg-gray-200', headerColorDark: 'dark:bg-gray-600', colColor: 'bg-gray-200', colColorDark: 'dark:bg-gray-700', shadowColor: '#374151' },
   ],
 }
 
@@ -150,7 +150,6 @@ export default function KanbanBoard({ tasks, visibleStatuses }: { tasks: Task[];
                         {task.favorite && <span className="text-yellow-400 shrink-0">★</span>}
                       </div>
                     </div>
-                    <Link href={`/projects/${task.project.id}`} className="text-xs text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 mb-2 flex items-center gap-1"><Folder className="h-3 w-3" />{task.project.name}</Link>
                     <div className="flex items-center justify-between">
                       <span className={`text-xs ${overdue ? 'text-red-700 dark:text-red-400 font-bold' : dueToday ? 'text-orange-600 dark:text-orange-400 font-medium' : dueTomorrow ? 'text-yellow-600 dark:text-yellow-400 font-medium' : 'text-gray-400 dark:text-gray-500'}`}>
                         {lang === 'zh' ? format(new Date(task.endDate), 'M月d日') : format(new Date(task.endDate), 'MMM d')}{t.dueText}

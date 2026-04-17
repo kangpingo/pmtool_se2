@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import TaskCard from './TaskCard'
 import { sortByProgress, sortByStartDate, sortByEndDate } from './TaskSortSelect'
 import { isTaskOverdue } from '@/lib/date-utils'
@@ -35,6 +35,7 @@ const labels = {
     taskList: '任务列表',
     total: '共 {total} 条任务',
     completed: '已完成',
+    inProgress: '进行中',
     overdue: '逾期',
     addTask: '添加任务',
     batchDelete: '批量删除',
@@ -49,21 +50,22 @@ const labels = {
     deselectAll: '取消全选',
   },
   en: {
-    taskList: 'Task List',
-    total: '{total} tasks',
+    taskList: 'Tasks',
+    total: '{total} Tasks',
     completed: 'Completed',
+    inProgress: 'In Progress',
     overdue: 'Overdue',
     addTask: 'Add Task',
-    batchDelete: '批量删除',
-    confirmDelete: '确认删除',
-    confirmMessage: '确定删除选中的任务？',
-    deleteWarning: '删除后不可撤销。',
-    cancel: '取消',
-    deleteBtn: '确认删除',
-    deleteSuccess: '已删除 {count} 个任务',
-    deleteFailed: '删除失败',
-    selectAll: '全选',
-    deselectAll: '取消全选',
+    batchDelete: 'Batch Delete',
+    confirmDelete: 'Confirm Delete',
+    confirmMessage: 'Are you sure you want to delete selected tasks?',
+    deleteWarning: 'This action cannot be undone.',
+    cancel: 'Cancel',
+    deleteBtn: 'Delete',
+    deleteSuccess: 'Deleted {count} tasks',
+    deleteFailed: 'Delete failed',
+    selectAll: 'Select All',
+    deselectAll: 'Deselect All',
   },
 }
 
@@ -80,8 +82,9 @@ const sortOptions = {
   ],
 }
 
-export default function TaskListSection({ tasks }: { tasks: Task[] }) {
+export default function TaskListSection({ tasks, projectId: projectIdProp, projectName: projectNameProp }: { tasks: Task[]; projectId?: string; projectName?: string }) {
   const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
   const [sortOrder, setSortOrder] = useState<'status' | 'startDate' | 'endDate'>('status')
   const [open, setOpen] = useState(false)
@@ -92,22 +95,46 @@ export default function TaskListSection({ tasks }: { tasks: Task[] }) {
   const t = labels[lang]
   const options = sortOptions[lang]
 
-  // Get highlighted task ID from URL
+  // Get highlighted task ID and status filter from URL
   const highlightedId = searchParams.get('highlight')
+  const statusFilter = searchParams.get('status')
+
+  // Apply status filter
+  const statusFiltered = statusFilter
+    ? statusFilter === 'in_progress'
+      ? tasks.filter(task => task.status !== 'DONE' && !isTaskOverdue(new Date(task.endDate)))
+      : statusFilter === 'completed'
+      ? tasks.filter(task => task.status === 'DONE')
+      : statusFilter === 'overdue'
+      ? tasks.filter(task => task.status !== 'DONE' && isTaskOverdue(new Date(task.endDate)))
+      : tasks
+    : tasks
 
   const sortedTasks = sortOrder === 'status'
-    ? sortByProgress(tasks)
+    ? sortByProgress(statusFiltered)
     : sortOrder === 'startDate'
-    ? sortByStartDate(tasks)
-    : sortByEndDate(tasks)
+    ? sortByStartDate(statusFiltered)
+    : sortByEndDate(statusFiltered)
 
-  const done = tasks.filter(t => t.status === 'DONE').length
+  const done = tasks.filter(task => task.status === 'DONE').length
   const total = tasks.length
-  const overdueCnt = tasks.filter(t => t.status !== 'DONE' && isTaskOverdue(new Date(t.endDate))).length
+  const overdueCnt = tasks.filter(task => task.status !== 'DONE' && isTaskOverdue(new Date(task.endDate))).length
+  const inProgressCnt = tasks.filter(task => task.status !== 'DONE' && !isTaskOverdue(new Date(task.endDate))).length
 
-  // Get projectId from first task
-  const projectId = tasks[0]?.project?.id || ''
-  const projectName = tasks[0]?.project?.name || ''
+  function setStatusFilter(filter: string | null) {
+    const params = new URLSearchParams(searchParams.toString())
+    if (filter) {
+      params.set('status', filter)
+    } else {
+      params.delete('status')
+    }
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
+  // Get projectId from first task or from props
+  const task0 = tasks.length > 0 ? (tasks[0] as Task) : null
+  const projectId = task0 ? ((task0 as any).project?.id || projectIdProp || '') : (projectIdProp || '')
+  const projectName = task0 ? ((task0 as any).project?.name || projectNameProp || '') : (projectNameProp || '')
 
   function toggleSelect(taskId: string) {
     const newSet = new Set(selectedTasks)
@@ -147,36 +174,63 @@ export default function TaskListSection({ tasks }: { tasks: Task[] }) {
   return (
     <div className="space-y-2">
       {total === 0 ? (
-        <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-              <Plus className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+        <div className="flex flex-col items-center justify-center pt-8 pb-16">
+          <div className="relative mb-6">
+            <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 flex items-center justify-center">
+              <svg className="w-14 h-14 text-blue-400 dark:text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                <path d="M9 12l2 2 4-4"/>
+              </svg>
             </div>
-            <p className="text-gray-500 dark:text-gray-400 font-medium">{lang === 'zh' ? '还没有任务' : 'No tasks yet'}</p>
-            <p className="text-sm text-gray-400 dark:text-gray-500">{lang === 'zh' ? '点击下方按钮添加第一个任务' : 'Click the button below to add your first task'}</p>
-            <CreateTaskDialog
-              projectId={projectId}
-              projectName={projectName}
-              trigger={
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200 dark:shadow-blue-900/50 mt-2 text-white">
-                  <Plus className="h-4 w-4 mr-1" />
-                  {t.addTask}
-                </Button>
-              }
-            />
+            <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shadow-md">
+              <Plus className="h-4 w-4 text-white" />
+            </div>
           </div>
+          <p className="text-base font-bold text-gray-600 dark:text-gray-200 mb-1">{lang === 'zh' ? '还没有任务' : 'No tasks yet'}</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">{lang === 'zh' ? '点击按钮添加你的第一个任务' : 'Add your first task to get started'}</p>
+          <CreateTaskDialog
+            projectId={projectId}
+            projectName={projectName}
+            trigger={
+              <Button className="bg-blue-500 hover:bg-blue-600 text-white px-5 h-9 rounded-lg text-sm font-medium shadow-md shadow-blue-200 dark:shadow-blue-900/30">
+                <Plus className="h-4 w-4 mr-1.5" />
+                {t.addTask}
+              </Button>
+            }
+          />
         </div>
       ) : (
         <>
           {/* 任务统计 */}
-          <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-3">
-            <div className="flex items-center gap-4">
-              <span className="text-lg font-bold text-gray-900 dark:text-gray-100">{t.taskList}</span>
-              <span className="text-gray-600 dark:text-gray-400">{lang === 'zh' ? `共 ${total} 条任务` : t.total.replace('{total}', String(total))}</span>
-              {done > 0 && <span className="text-green-600 dark:text-green-400">{done} {t.completed}</span>}
-              {overdueCnt > 0 && <span className="text-red-500 dark:text-red-400">{overdueCnt} {t.overdue}</span>}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3 text-sm font-bold">
+              <button
+                onClick={() => setStatusFilter(null)}
+                className={`px-2 py-0.5 rounded-md transition-colors ${!statusFilter ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
+              >
+                {lang === 'zh' ? `${total} 条任务` : t.total.replace('{total}', String(total))}
+              </button>
+              <button
+                onClick={() => setStatusFilter('in_progress')}
+                className={`text-xs px-2 py-0.5 rounded-md transition-colors ${statusFilter === 'in_progress' ? 'bg-blue-500 text-white' : 'text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300'}`}
+              >
+                {inProgressCnt} {t.inProgress}
+              </button>
+              <button
+                onClick={() => setStatusFilter('completed')}
+                className={`text-xs px-2 py-0.5 rounded-md transition-colors ${statusFilter === 'completed' ? 'bg-black dark:bg-gray-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white'}`}
+              >
+                {done} {t.completed}
+              </button>
+              <button
+                onClick={() => setStatusFilter('overdue')}
+                className={`text-xs px-2 py-0.5 rounded-md transition-colors ${statusFilter === 'overdue' ? 'bg-red-500 text-white' : 'text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300'}`}
+              >
+                {overdueCnt} {t.overdue}
+              </button>
               {selectedTasks.size > 0 && (
-                <span className="text-blue-600 dark:text-blue-400">{selectedTasks.size} 已选</span>
+                <span className="text-xs text-blue-600 dark:text-blue-400">{selectedTasks.size} 已选</span>
               )}
             </div>
             <div className="flex items-center gap-2">

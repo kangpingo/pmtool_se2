@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from 'next'
+import { cookies } from 'next/headers'
 import '../globals.css'
 import { Toaster } from 'sonner'
 import Sidebar from '@/components/Sidebar'
-import Header from '@/components/Header'
+import ProjectPageHeader from './ProjectPageHeader'
+import ContentArea from './ContentArea'
 
 export const metadata: Metadata = {
   title: 'PMTool SE1',
@@ -18,14 +20,17 @@ export const viewport: Viewport = {
 }
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies()
+  const lang = (cookieStore.get('lang')?.value as 'zh' | 'en') || 'zh'
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#e8edf4] dark:bg-gray-900 transition-colors duration-300">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto">
+        <ProjectPageHeader lang={lang} />
+        <ContentArea>
           {children}
-        </main>
+        </ContentArea>
       </div>
       <Toaster
         position="top-center"
