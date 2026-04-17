@@ -1,8 +1,6 @@
-# PMTool SE1 – Lightweight Project Management
+# PMTool SE2 – Lightweight Project Management
 
 <img width="1274" height="706" alt="image" src="https://github.com/user-attachments/assets/fac8fbbe-85c8-4f20-bdda-86b25043fbd9" />
-
-<img width="1267" height="713" alt="image" src="https://github.com/user-attachments/assets/44d33308-8115-4d1a-b5cd-d2b6ff8d6b8c" />
 
 A modern, responsive project management system designed for teams and individuals to track tasks, manage projects, and visualize progress through intuitive views including Kanban boards and Gantt charts.
 
@@ -10,29 +8,39 @@ A modern, responsive project management system designed for teams and individual
 
 ### Project & Task Management
 - **Dashboard** – Overview of active projects, tasks, and deadlines at a glance
-- **Projects** – Create, edit, copy, and delete projects with full metadata
-- **Tasks** – Full task lifecycle management with status tracking
-- **Kanban Board** – Visual task management with drag-and-drop style columns
-- **Gantt Chart** – Timeline view for project scheduling and planning
-- **Task Filtering** – Filter tasks by status, project, and time windows
+- **Projects** – Create, edit, copy, and delete projects with full metadata (owner, dates, progress)
+- **Tasks** – Full task lifecycle management with status tracking (TODO / IN_PROGRESS / DONE)
+- **Kanban Board** – Visual task management with drag-and-drop style columns (TODO / IN_PROGRESS / OVERDUE / DONE)
+- **Gantt Chart** – Timeline view for project scheduling and planning with day/week/month scale
+- **Project Status** – Automatic status color coding:
+  - 🟢 **Not Started** (0% progress)
+  - 🔵 **In Progress** (1-99%)
+  - 🔴 **Overdue** (past planned end date)
+  - ⚫ **Completed** (100%)
 - **Bidirectional Date-Duration Sync** – Adjusting dates auto-updates duration; changing duration auto-updates end date
 
-### User Management
-- **User Registration** – Account creation with validation (letters, numbers, underscore only)
-- **User Authentication** – Cookie-based login with hardcoded admin account support
-- **User List** – View all system users (account, display name, email) from settings menu
-- **User Profile** – Editable display name and email; account name is read-only
+### Search & Navigation
+- **Global Search** – Search bar in header with project/task toggle
+- **Project Search** – Find projects by name, shows status icon + progress
+- **Task Search** – Find tasks by name, shows task name,所属项目, progress %; click to navigate and highlight
+
+### Task Filtering & Sorting
+- **Status Filter** – Filter by: All / In Progress / Completed / Overdue (clickable tabs)
+- **Sort By** – Progress / Start Date / End Date
+- **Batch Operations** – Select multiple tasks and batch delete
 
 ### UI/UX
-- **Dark/Light Theme** – Seamless theme switching for comfortable viewing
+- **Dark/Light Theme** – Seamless theme switching
 - **Internationalization** – Full Chinese and English language support
-- **About Dialog** – Project information accessible from header
-- **Message Board** – Quick access from header for team communication
+- **Responsive Design** – Works on desktop and mobile
+- **Message Board** – Quick team communication from header
+- **Data Import/Export** – Export/import via CSV format
 
-### Data Management
-- **Data Import/Export** – Export and import project/task data via JSON
-- **Data Initialization** – Reset database with sample data
-- **Operation Logs** – Track user actions with granular button/menu-level logging
+### User Management
+- **User Registration** – Account creation with validation
+- **User Authentication** – Cookie-based login with hardcoded admin account support
+- **User List** – View all system users from settings menu
+- **User Profile** – Editable display name and email
 
 ## Tech Stack
 
@@ -45,82 +53,35 @@ A modern, responsive project management system designed for teams and individual
 
 ### Backend
 - **Prisma ORM** – Type-safe database access
-- **PostgreSQL** (production) / **SQLite** (development)
+- **PostgreSQL** – Production database
 
 ### Date & State
-- **date-fns** & **date-fns-tz** – Date manipulation and timezone handling
-
-### Deployment
-- **Vercel** – Zero-config deployment
-- **Docker** – Self-hosted via Docker Compose
-
-## Project Structure
-
-```
-├── app/
-│   ├── (app)/                  # Main application pages
-│   │   ├── page.tsx           # Dashboard
-│   │   ├── projects/          # Project detail pages
-│   │   ├── tasks/            # Task listing page
-│   │   ├── kanban/           # Kanban board page
-│   │   └── gantt/            # Gantt chart page
-│   ├── api/                   # API routes
-│   │   ├── auth/             # Login, logout, register, check-username
-│   │   ├── projects/         # Project CRUD + copy
-│   │   ├── tasks/            # Task CRUD + duplicate
-│   │   ├── users/            # User list
-│   │   ├── logs/             # Operation logs
-│   │   └── messages/         # Message board
-│   └── login/                # Login & register pages
-├── components/
-│   ├── ui/                   # shadcn/ui base components
-│   ├── Header.tsx            # Top navigation bar
-│   ├── Sidebar.tsx           # Side navigation menu
-│   ├── TaskCard.tsx          # Task card component
-│   ├── TaskListSection.tsx   # Task list container
-│   ├── KanbanBoard.tsx       # Kanban board
-│   ├── GanttChart.tsx        # Gantt chart
-│   ├── LogViewer.tsx         # Operation log viewer
-│   ├── UserProfileDialog.tsx # User profile dialog
-│   ├── UserListDialog.tsx    # User list dialog
-│   ├── SettingsDialog.tsx    # Settings dialog
-│   ├── DeclarationDialog.tsx # About dialog
-│   ├── MessageBoardDialog.tsx # Message board dialog
-│   └── ...
-├── lib/
-│   ├── prisma.ts             # Prisma client
-│   ├── utils.ts              # Utility functions
-│   ├── date-utils.ts         # Date calculation utilities
-│   └── i18n.ts              # Internationalization labels
-└── prisma/
-    └── schema.prisma         # Database schema
-```
+- **date-fns** – Date manipulation and formatting
 
 ## Setup
 
 ### Prerequisites
 - Node.js 18+
-- PostgreSQL (or SQLite for local dev)
+- PostgreSQL 14+
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/kangpingo/pmtool_se1.git
-cd pmtool_se1
+git clone https://github.com/kangpingo/pmtool_se2.git
+cd pmtool_se2
 
 # Install dependencies
 npm install
 
-# Set up environment
-cp .env.example .env  # or create .env with DATABASE_URL
+# Configure environment
+cp .env.example .env
+# Edit .env with your DATABASE_URL
 
-# Generate Prisma client & push schema
-npm run db:generate
-npm run db:push
-
-# Seed with sample data (optional)
-npm run db:seed
+# Initialize database
+npm run db:generate   # Generate Prisma client
+npm run db:push       # Push schema to database
+npm run db:seed       # Seed demo data (10 projects, 61 tasks)
 
 # Start development server
 npm run dev
@@ -132,40 +93,71 @@ Open [http://localhost:3000](http://localhost:3000).
 - Account: `admin`
 - Password: `admin@123`
 
-## Deployment
+## Database
 
-### Vercel (Recommended)
-```bash
-npm i -g vercel
-vercel login
-vercel --prod
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/pmtool_se2"
 ```
-Set `DATABASE_URL` in Vercel Dashboard → Settings → Environment Variables.
 
-### Docker (Self-hosted)
-```bash
-docker-compose up -d
+## Project Structure
+
 ```
-Full documentation: [DEPLOY.md](DEPLOY.md)
+├── app/
+│   ├── (app)/                  # Authenticated app routes
+│   │   ├── page.tsx           # Dashboard overview
+│   │   ├── projects/[id]/     # Project detail
+│   │   │   ├── tasks/         # Task list view
+│   │   │   ├── kanban/        # Kanban board view
+│   │   │   └── gantt/         # Gantt chart view
+│   │   └── tasks/             # All tasks across projects
+│   ├── api/                    # API routes
+│   │   ├── auth/              # Login, logout, register
+│   │   ├── projects/          # Project CRUD + copy
+│   │   ├── tasks/             # Task CRUD + duplicate
+│   │   ├── search/            # Global search
+│   │   └── messages/          # Message board
+│   └── login/                 # Login & register pages
+├── components/
+│   ├── ui/                    # shadcn/ui base components
+│   ├── KanbanBoard.tsx        # Kanban board
+│   ├── GanttChart.tsx         # Gantt chart
+│   ├── TaskListSection.tsx    # Task list with filters
+│   ├── TaskCard.tsx           # Task card component
+│   ├── SearchBar.tsx          # Project/Task search
+│   └── Sidebar.tsx            # Navigation sidebar
+└── prisma/
+    └── schema.prisma           # Database schema
+```
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run db:generate` | Generate Prisma client |
+| `npm run db:push` | Push schema to database |
+| `npm run db:migrate` | Run database migrations |
+| `npm run db:seed` | Seed demo data |
+| `npm run db:studio` | Open Prisma Studio |
 
 ## Version History
+
+### v2.0.0 (2026-04-18)
+- Navigation redesign: sidebar logo, dynamic project list with status icons
+- Project header: status-based color coding (green/blue/red/black)
+- SearchBar: project/task toggle search with status-colored folder icons
+- Task list: status filter tabs, task statistics with color coding
+- Project/Task creation: owner and completion date as required fields
+- Demo data: 10 projects with realistic distribution (2 not started, 4 in progress, 2 overdue, 2 completed)
 
 ### v1.0.0 (2026-04-17)
 - User management: registration, display name, user list
 - Bidirectional date-duration sync in task/project dialogs
 - Internationalized operation logs
-- Fixed log viewer with scrollable content
-- Simplified user profile dialog
-- Added About dialog and Message Board shortcut
 - Docker + Vercel deployment support
-
-### v0.1.0 (2026-04-16)
-- Initial release
-- Project & task CRUD
-- Kanban board
-- Gantt chart
-- Dark/light theme
-- Chinese/English i18n
 
 ## Screenshots
 
@@ -174,10 +166,6 @@ Full documentation: [DEPLOY.md](DEPLOY.md)
 
 *Project View*
 <img width="1266" height="695" alt="image" src="https://github.com/user-attachments/assets/38749e00-3eb5-4116-b471-c7badd531386" />
-<img width="1269" height="722" alt="image" src="https://github.com/user-attachments/assets/274e96dc-c54f-4edc-a3e1-d3d479ab93ae" />
-
-*Task View*
-<img width="1261" height="718" alt="image" src="https://github.com/user-attachments/assets/937bab26-b128-42f5-95af-4654de5f7462" />
 
 *Kanban Board*
 <img width="1262" height="819" alt="image" src="https://github.com/user-attachments/assets/7ed2c540-ca74-404b-aea2-3a81979d14dd" />
