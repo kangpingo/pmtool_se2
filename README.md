@@ -1,6 +1,6 @@
 # PMTool SE2 – 轻量级项目管理工具
+<img width="1280" height="947" alt="image" src="https://github.com/user-attachments/assets/d38829b9-ba7a-463d-b420-71c7079a6384" />
 
-<img width="1274" height="706" alt="Dashboard" src="https://github.com/user-attachments/assets/fac8fbbe-85c8-4f20-bdda-86b25043fbd9" />
 
 一个现代化的响应式项目管理系统，帮助团队和个人跟踪任务、管理项目，通过看板、甘特图等直观视图可视化进度。
 
@@ -159,35 +159,18 @@ npm run dev
 | `npm run db:seed` | 初始化演示数据 |
 | `npm run db:studio` | 打开 Prisma Studio |
 
-## 版本历史
-
-### v2.0.0 (2026-04-18)
-- 导航重构：侧边栏 Logo + 动态项目列表（带状态图标）
-- 项目头部：状态色彩标识（绿/蓝/红/黑）
-- 搜索栏：项目/任务切换，状态色彩文件夹图标
-- 任务列表：状态筛选 Tab，彩色统计数字
-- 项目/任务创建：负责人和完成日期改为必填
-- 演示数据：10 个项目（2 未开始、4 进行中、2 逾期、2 已完成）
-
-### v1.0.0 (2026-04-17)
-- 用户管理：注册、显示名、用户列表
-- 双向日期-工期同步
-- 国际化操作日志
-- Docker + Vercel 部署支持
-
 ## 截图展示
 
-**总览仪表盘**
-<img width="1267" height="713" alt="Dashboard" src="https://github.com/user-attachments/assets/f01a3586-0ec4-4108-89a8-96eb1757d19c" />
-
 **项目视图**
-<img width="1266" height="695" alt="Project" src="https://github.com/user-attachments/assets/38749e00-3eb5-4116-b471-c7badd531386" />
+<img width="1280" height="947" alt="image" src="https://github.com/user-attachments/assets/239fb0a3-5bea-4ad5-9d70-1edf3f1c23e3" />
+
 
 **看板视图**
-<img width="1262" height="819" alt="Kanban" src="https://github.com/user-attachments/assets/7ed2c540-ca74-404b-aea2-3a81979d14dd" />
+<img width="1280" height="947" alt="image" src="https://github.com/user-attachments/assets/5e23bb28-bcfe-46f8-888b-2760a36bc653" />
+
 
 **甘特图**
-<img width="1267" height="824" alt="Gantt" src="https://github.com/user-attachments/assets/55e2305f-322b-4c88-8454-589a622fe9cf" />
+<img width="1280" height="947" alt="image" src="https://github.com/user-attachments/assets/5044dfac-5e5b-46de-a90b-697f59646dcc" />
 
 ## License
 
